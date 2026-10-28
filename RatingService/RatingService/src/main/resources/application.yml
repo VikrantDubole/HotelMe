@@ -22,5 +22,5 @@ eureka:
 
 okta:
   oauth2:
-    issuer: https://dev-77584981.okta.com/oauth2/default
-    audience: api://default
+    issuer: ${OKTA_ISSUER}
+    audience: ${OKTA_AUDIENCE:api://default}

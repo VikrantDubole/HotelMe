@@ -1,0 +1,37 @@
+name: hotelme
+services:
+  user-db:
+    image: mysql:8.4
+    environment: {MYSQL_DATABASE: microservices, MYSQL_ROOT_PASSWORD: root}
+    ports: ["3307:3306"]
+    volumes: ["user-db-data:/var/lib/mysql"]
+    healthcheck: {test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"], interval: 10s, timeout: 5s, retries: 10}
+  hotel-db:
+    image: postgres:17
+    environment: {POSTGRES_DB: microservice, POSTGRES_USER: postgres, POSTGRES_PASSWORD: root}
+    ports: ["5432:5432"]
+    volumes: ["hotel-db-data:/var/lib/postgresql/data"]
+    healthcheck: {test: ["CMD-SHELL", "pg_isready -U postgres -d microservice"], interval: 10s, timeout: 5s, retries: 10}
+  booking-db:
+    image: postgres:17
+    environment: {POSTGRES_DB: booking, POSTGRES_USER: booking, POSTGRES_PASSWORD: booking}
+    ports: ["5433:5432"]
+    volumes: ["booking-db-data:/var/lib/postgresql/data"]
+    healthcheck: {test: ["CMD-SHELL", "pg_isready -U booking -d booking"], interval: 10s, timeout: 5s, retries: 10}
+  payment-db:
+    image: postgres:17
+    environment: {POSTGRES_DB: payment, POSTGRES_USER: payment, POSTGRES_PASSWORD: payment}
+    ports: ["5434:5432"]
+    volumes: ["payment-db-data:/var/lib/postgresql/data"]
+    healthcheck: {test: ["CMD-SHELL", "pg_isready -U payment -d payment"], interval: 10s, timeout: 5s, retries: 10}
+  rating-db:
+    image: mongo:8
+    ports: ["27017:27017"]
+    volumes: ["rating-db-data:/data/db"]
+    healthcheck: {test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"], interval: 10s, timeout: 5s, retries: 10}
+volumes:
+  user-db-data:
+  hotel-db-data:
+  booking-db-data:
+  payment-db-data:
+  rating-db-data:

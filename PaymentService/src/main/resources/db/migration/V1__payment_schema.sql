@@ -1,0 +1,2 @@
+create table payments (id varchar(64) primary key,reservation_id varchar(64) not null,guest_id varchar(255) not null,amount numeric(12,2) not null,currency varchar(3) not null,status varchar(32) not null,provider_reference varchar(255) not null,idempotency_key varchar(128) not null,created_at timestamp with time zone not null,updated_at timestamp with time zone not null,version bigint not null default 0,constraint uk_payment_idempotency unique(idempotency_key));
+create index idx_payment_guest on payments(guest_id,created_at desc);
