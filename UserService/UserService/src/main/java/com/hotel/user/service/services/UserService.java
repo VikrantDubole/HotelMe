@@ -1,25 +1,24 @@
-package com.lcwd.user.service.services;
+package com.hotel.user.service.services;
 
-import com.lcwd.user.service.entities.User;
+import com.hotel.user.service.entities.User;
 
 import java.util.List;
 
 public interface UserService {
 
-    //user operations
+	// user operations
 
-    //create
-    User saveUser(User user);
+	// create
+	User saveUser(User user);
 
-    //get all user
-    List<User> getAllUser();
+	// get all user
+	List<User> getAllUser();
 
-    //get single user of given userId
+	// get single user of given userId
 
-    User getUser(String userId);
+	User getUser(String userId);
 
-    //TODO: delete
-    //TODO: update
-
+	// TODO: delete
+	// TODO: update
 
 }

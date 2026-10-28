@@ -1,19 +1,121 @@
 package com.hotelme.booking.service;
 
-import com.hotelme.booking.api.BookingRequests.*; import com.hotelme.booking.domain.*; import com.hotelme.booking.repository.*;
-import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal; import java.time.*; import java.time.temporal.ChronoUnit; import java.util.*;
+import com.hotelme.booking.api.BookingRequests.*;
+import com.hotelme.booking.domain.*;
+import com.hotelme.booking.repository.*;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
-@Service @Transactional(readOnly=true)
+@Service
+@Transactional(readOnly = true)
 public class BookingService {
-    private final InventoryRepository inventory; private final ReservationRepository reservations;
-    public BookingService(InventoryRepository inventory,ReservationRepository reservations){this.inventory=inventory;this.reservations=reservations;}
-    @Transactional public void setInventory(InventoryRequest r){ requireDates(r.getStartDate(),r.getEndDate()); for(LocalDate d=r.getStartDate();d.isBefore(r.getEndDate());d=d.plusDays(1)){ Inventory i=inventory.findByHotelIdAndRoomTypeIdAndStayDate(r.getHotelId(),r.getRoomTypeId(),d).orElseGet(Inventory::new); int sold=i.getTotalRooms()-i.getAvailableRooms(); if(r.getTotalRooms()<sold) throw new IllegalStateException("Inventory cannot be reduced below rooms already sold"); i.setHotelId(r.getHotelId());i.setRoomTypeId(r.getRoomTypeId());i.setStayDate(d);i.setTotalRooms(r.getTotalRooms());i.setAvailableRooms(r.getTotalRooms()-sold);i.setNightlyRate(r.getNightlyRate());i.setCurrency(r.getCurrency());inventory.save(i);}}
-    public Map<String,Object> availability(String h,String t,LocalDate in,LocalDate out,int rooms){requireDates(in,out);List<Inventory> days=inventory.findStay(h,t,in,out);validateCoverage(days,in,out);int available=days.stream().mapToInt(Inventory::getAvailableRooms).min().orElse(0);BigDecimal rate=days.stream().map(Inventory::getNightlyRate).reduce(BigDecimal.ZERO,BigDecimal::add);return Map.of("available",available>=rooms,"availableRooms",available,"stayTotalPerRoom",rate,"currency",days.get(0).getCurrency());}
-    @Transactional public Reservation reserve(String guest,String key,ReservationRequest r){if(key==null||key.isBlank())throw new IllegalArgumentException("Idempotency-Key header is required");Optional<Reservation> existing=reservations.findByIdempotencyKey(key);if(existing.isPresent())return existing.get();requireDates(r.getCheckIn(),r.getCheckOut());List<Inventory> days=inventory.lockStay(r.getHotelId(),r.getRoomTypeId(),r.getCheckIn(),r.getCheckOut());validateCoverage(days,r.getCheckIn(),r.getCheckOut());if(days.stream().anyMatch(i->i.getAvailableRooms()<r.getRooms()))throw new IllegalStateException("Requested rooms are not available for the complete stay");days.forEach(i->i.setAvailableRooms(i.getAvailableRooms()-r.getRooms()));Reservation b=new Reservation();b.setId(UUID.randomUUID().toString());b.setGuestId(guest);b.setHotelId(r.getHotelId());b.setRoomTypeId(r.getRoomTypeId());b.setCheckIn(r.getCheckIn());b.setCheckOut(r.getCheckOut());b.setRoomCount(r.getRooms());b.setAdults(r.getAdults());b.setChildren(r.getChildren());b.setTotalAmount(days.stream().map(Inventory::getNightlyRate).reduce(BigDecimal.ZERO,BigDecimal::add).multiply(BigDecimal.valueOf(r.getRooms())));b.setCurrency(days.get(0).getCurrency());b.setStatus(ReservationStatus.CONFIRMED);b.setIdempotencyKey(key);b.setCreatedAt(Instant.now());return reservations.save(b);}
-    public Reservation get(String id,String guest,boolean admin){Reservation r=reservations.findById(id).orElseThrow(()->new NoSuchElementException("Reservation not found"));if(!admin&&!r.getGuestId().equals(guest))throw new SecurityException("Reservation belongs to another guest");return r;}
-    public List<Reservation> getForGuest(String guest){return reservations.findAllByGuestIdOrderByCreatedAtDesc(guest);}
-    @Transactional public Reservation cancel(String id,String guest,boolean admin){Reservation r=get(id,guest,admin);if(r.getStatus()==ReservationStatus.CANCELLED)return r;if(r.getStatus()!=ReservationStatus.CONFIRMED)throw new IllegalStateException("Only confirmed reservations can be cancelled");List<Inventory> days=inventory.lockStay(r.getHotelId(),r.getRoomTypeId(),r.getCheckIn(),r.getCheckOut());validateCoverage(days,r.getCheckIn(),r.getCheckOut());days.forEach(i->i.setAvailableRooms(Math.min(i.getTotalRooms(),i.getAvailableRooms()+r.getRoomCount())));r.setStatus(ReservationStatus.CANCELLED);return reservations.save(r);}
-    private void requireDates(LocalDate in,LocalDate out){if(in==null||out==null||!out.isAfter(in))throw new IllegalArgumentException("End/check-out date must be after start/check-in date");}
-    private void validateCoverage(List<Inventory> days,LocalDate in,LocalDate out){if(days.size()!=ChronoUnit.DAYS.between(in,out))throw new IllegalStateException("Inventory has not been configured for every night");}
+	private final InventoryRepository inventory;
+	private final ReservationRepository reservations;
+
+	public BookingService(InventoryRepository inventory, ReservationRepository reservations) {
+		this.inventory = inventory;
+		this.reservations = reservations;
+	}
+
+	@Transactional
+	public void setInventory(InventoryRequest r) {
+		requireDates(r.getStartDate(), r.getEndDate());
+		for (LocalDate d = r.getStartDate(); d.isBefore(r.getEndDate()); d = d.plusDays(1)) {
+			Inventory i = inventory.findByHotelIdAndRoomTypeIdAndStayDate(r.getHotelId(), r.getRoomTypeId(), d)
+					.orElseGet(Inventory::new);
+			int sold = i.getTotalRooms() - i.getAvailableRooms();
+			if (r.getTotalRooms() < sold)
+				throw new IllegalStateException("Inventory cannot be reduced below rooms already sold");
+			i.setHotelId(r.getHotelId());
+			i.setRoomTypeId(r.getRoomTypeId());
+			i.setStayDate(d);
+			i.setTotalRooms(r.getTotalRooms());
+			i.setAvailableRooms(r.getTotalRooms() - sold);
+			i.setNightlyRate(r.getNightlyRate());
+			i.setCurrency(r.getCurrency());
+			inventory.save(i);
+		}
+	}
+
+	public Map<String, Object> availability(String h, String t, LocalDate in, LocalDate out, int rooms) {
+		requireDates(in, out);
+		List<Inventory> days = inventory.findStay(h, t, in, out);
+		validateCoverage(days, in, out);
+		int available = days.stream().mapToInt(Inventory::getAvailableRooms).min().orElse(0);
+		BigDecimal rate = days.stream().map(Inventory::getNightlyRate).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return Map.of("available", available >= rooms, "availableRooms", available, "stayTotalPerRoom", rate,
+				"currency", days.get(0).getCurrency());
+	}
+
+	@Transactional
+	public Reservation reserve(String guest, String key, ReservationRequest r) {
+		if (key == null || key.isBlank())
+			throw new IllegalArgumentException("Idempotency-Key header is required");
+		Optional<Reservation> existing = reservations.findByIdempotencyKey(key);
+		if (existing.isPresent())
+			return existing.get();
+		requireDates(r.getCheckIn(), r.getCheckOut());
+		List<Inventory> days = inventory.lockStay(r.getHotelId(), r.getRoomTypeId(), r.getCheckIn(), r.getCheckOut());
+		validateCoverage(days, r.getCheckIn(), r.getCheckOut());
+		if (days.stream().anyMatch(i -> i.getAvailableRooms() < r.getRooms()))
+			throw new IllegalStateException("Requested rooms are not available for the complete stay");
+		days.forEach(i -> i.setAvailableRooms(i.getAvailableRooms() - r.getRooms()));
+		Reservation b = new Reservation();
+		b.setId(UUID.randomUUID().toString());
+		b.setGuestId(guest);
+		b.setHotelId(r.getHotelId());
+		b.setRoomTypeId(r.getRoomTypeId());
+		b.setCheckIn(r.getCheckIn());
+		b.setCheckOut(r.getCheckOut());
+		b.setRoomCount(r.getRooms());
+		b.setAdults(r.getAdults());
+		b.setChildren(r.getChildren());
+		b.setTotalAmount(days.stream().map(Inventory::getNightlyRate).reduce(BigDecimal.ZERO, BigDecimal::add)
+				.multiply(BigDecimal.valueOf(r.getRooms())));
+		b.setCurrency(days.get(0).getCurrency());
+		b.setStatus(ReservationStatus.CONFIRMED);
+		b.setIdempotencyKey(key);
+		b.setCreatedAt(Instant.now());
+		return reservations.save(b);
+	}
+
+	public Reservation get(String id, String guest, boolean admin) {
+		Reservation r = reservations.findById(id)
+				.orElseThrow(() -> new NoSuchElementException("Reservation not found"));
+		if (!admin && !r.getGuestId().equals(guest))
+			throw new SecurityException("Reservation belongs to another guest");
+		return r;
+	}
+
+	public List<Reservation> getForGuest(String guest) {
+		return reservations.findAllByGuestIdOrderByCreatedAtDesc(guest);
+	}
+
+	@Transactional
+	public Reservation cancel(String id, String guest, boolean admin) {
+		Reservation r = get(id, guest, admin);
+		if (r.getStatus() == ReservationStatus.CANCELLED)
+			return r;
+		if (r.getStatus() != ReservationStatus.CONFIRMED)
+			throw new IllegalStateException("Only confirmed reservations can be cancelled");
+		List<Inventory> days = inventory.lockStay(r.getHotelId(), r.getRoomTypeId(), r.getCheckIn(), r.getCheckOut());
+		validateCoverage(days, r.getCheckIn(), r.getCheckOut());
+		days.forEach(i -> i.setAvailableRooms(Math.min(i.getTotalRooms(), i.getAvailableRooms() + r.getRoomCount())));
+		r.setStatus(ReservationStatus.CANCELLED);
+		return reservations.save(r);
+	}
+
+	private void requireDates(LocalDate in, LocalDate out) {
+		if (in == null || out == null || !out.isAfter(in))
+			throw new IllegalArgumentException("End/check-out date must be after start/check-in date");
+	}
+
+	private void validateCoverage(List<Inventory> days, LocalDate in, LocalDate out) {
+		if (days.size() != ChronoUnit.DAYS.between(in, out))
+			throw new IllegalStateException("Inventory has not been configured for every night");
+	}
 }

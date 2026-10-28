@@ -1,11 +1,11 @@
-package com.lcwd.hotel.controllers;
+package com.hotel.hotel.controllers;
 
-import com.lcwd.hotel.entites.Room;
-import com.lcwd.hotel.entites.RoomStatus;
-import com.lcwd.hotel.entites.RoomType;
-import com.lcwd.hotel.payload.CreateRoomRequest;
-import com.lcwd.hotel.payload.CreateRoomTypeRequest;
-import com.lcwd.hotel.services.RoomCatalogService;
+import com.hotel.hotel.entites.Room;
+import com.hotel.hotel.entites.RoomStatus;
+import com.hotel.hotel.entites.RoomType;
+import com.hotel.hotel.payload.CreateRoomRequest;
+import com.hotel.hotel.payload.CreateRoomTypeRequest;
+import com.hotel.hotel.services.RoomCatalogService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

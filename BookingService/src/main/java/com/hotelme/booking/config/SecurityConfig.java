@@ -10,11 +10,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeHttpRequests().antMatchers("/actuator/health").permitAll()
-                .anyRequest().authenticated().and().oauth2ResourceServer().jwt();
-        return http.build();
-    }
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.authorizeHttpRequests().antMatchers("/actuator/health").permitAll().anyRequest().authenticated().and()
+				.oauth2ResourceServer().jwt();
+		return http.build();
+	}
 }

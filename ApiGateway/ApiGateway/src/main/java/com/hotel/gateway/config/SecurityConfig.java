@@ -1,4 +1,4 @@
-package com.lcwd.gateway.config;
+package com.hotel.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,24 +10,14 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity httpSecurity) {
+	@Bean
+	public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity httpSecurity) {
 
-        httpSecurity
-                .authorizeExchange()
-                .anyExchange()
-                .authenticated()
-                .and()
-                .oauth2Client()
-                .and()
-                .oauth2ResourceServer()
-                .jwt();
+		httpSecurity.authorizeExchange().anyExchange().authenticated().and().oauth2Client().and().oauth2ResourceServer()
+				.jwt();
 
+		return httpSecurity.build();
 
-        return httpSecurity.build();
-
-
-    }
-
+	}
 
 }

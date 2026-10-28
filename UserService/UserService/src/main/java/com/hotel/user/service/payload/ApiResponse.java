@@ -1,4 +1,4 @@
-package com.lcwd.user.service.payload;
+package com.hotel.user.service.payload;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;
@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @Builder
 public class ApiResponse {
-    private String message;
-    private boolean success;
-    private HttpStatus status;
+	private String message;
+	private boolean success;
+	private HttpStatus status;
 
 }

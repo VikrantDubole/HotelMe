@@ -1,4 +1,4 @@
-package com.lcwd.gateway.models;
+package com.hotel.gateway.models;
 
 import lombok.*;
 
@@ -10,11 +10,11 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthResponse {
-    private String userId;
-    private String accessToken;
-    private String refreshToken;
+	private String userId;
+	private String accessToken;
+	private String refreshToken;
 
-    private long expireAt;
+	private long expireAt;
 
-    private Collection<String> authorities;
+	private Collection<String> authorities;
 }

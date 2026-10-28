@@ -1,6 +1,6 @@
-package com.lcwd.user.service.config;
+package com.hotel.user.service.config;
 
-import com.lcwd.user.service.config.interceptor.RestTemplateInterceptor;
+import com.hotel.user.service.config.interceptor.RestTemplateInterceptor;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,28 +17,22 @@ import java.util.Collections;
 @Configuration
 public class MyConfig {
 
-    @Bean
-    @LoadBalanced
-    public RestTemplate restTemplate(RestTemplateInterceptor interceptor) {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setInterceptors(Collections.singletonList(interceptor));
-        return restTemplate;
-    }
+	@Bean
+	@LoadBalanced
+	public RestTemplate restTemplate(RestTemplateInterceptor interceptor) {
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setInterceptors(Collections.singletonList(interceptor));
+		return restTemplate;
+	}
 
-    @Bean
-    public OAuth2AuthorizedClientManager manager(
-            ClientRegistrationRepository clientRegistrationRepository,
-            OAuth2AuthorizedClientService authorizedClientService
-    ) {
-        OAuth2AuthorizedClientProvider provider = OAuth2AuthorizedClientProviderBuilder.builder()
-                .clientCredentials()
-                .build();
-        AuthorizedClientServiceOAuth2AuthorizedClientManager manager =
-                new AuthorizedClientServiceOAuth2AuthorizedClientManager(
-                        clientRegistrationRepository,
-                        authorizedClientService
-                );
-        manager.setAuthorizedClientProvider(provider);
-        return manager;
-    }
+	@Bean
+	public OAuth2AuthorizedClientManager manager(ClientRegistrationRepository clientRegistrationRepository,
+			OAuth2AuthorizedClientService authorizedClientService) {
+		OAuth2AuthorizedClientProvider provider = OAuth2AuthorizedClientProviderBuilder.builder().clientCredentials()
+				.build();
+		AuthorizedClientServiceOAuth2AuthorizedClientManager manager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(
+				clientRegistrationRepository, authorizedClientService);
+		manager.setAuthorizedClientProvider(provider);
+		return manager;
+	}
 }

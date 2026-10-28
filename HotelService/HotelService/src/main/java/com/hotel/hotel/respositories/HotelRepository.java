@@ -1,6 +1,6 @@
-package com.lcwd.hotel.respositories;
+package com.hotel.hotel.respositories;
 
-import com.lcwd.hotel.entites.Hotel;
+import com.hotel.hotel.entites.Hotel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HotelRepository extends JpaRepository<Hotel, String> {

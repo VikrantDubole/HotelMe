@@ -1,4 +1,4 @@
-package com.lcwd.user.service.config;
+package com.hotel.user.service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,23 +13,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
 
-        security
-                .csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeHttpRequests()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .oauth2ResourceServer()
-                .jwt();
+		security.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.authorizeHttpRequests().anyRequest().authenticated().and().oauth2ResourceServer().jwt();
 
-        return security.build();
+		return security.build();
 
-    }
+	}
 
 }

@@ -1,4 +1,4 @@
-package com.lcwd.hotel.exceptions;
+package com.hotel.hotel.exceptions;
 
 public class ConflictException extends RuntimeException {
     public ConflictException(String message) {

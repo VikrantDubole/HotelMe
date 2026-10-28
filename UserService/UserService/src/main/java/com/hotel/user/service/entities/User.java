@@ -1,4 +1,4 @@
-package com.lcwd.user.service.entities;
+package com.hotel.user.service.entities;
 
 import lombok.*;
 
@@ -15,22 +15,21 @@ import java.util.List;
 @Table(name = "micro_users")
 public class User {
 
-    @Id
-    @Column(name = "ID")
-    private String userId;
+	@Id
+	@Column(name = "ID")
+	private String userId;
 
-    @Column(name = "NAME", length = 20)
-    private String name;
+	@Column(name = "NAME", length = 20)
+	private String name;
 
-    @Column(name = "EMAIL")
+	@Column(name = "EMAIL")
 
-    private String email;
-    @Column(name = "ABOUT")
-    private String about;
-    //other user properties that you want
+	private String email;
+	@Column(name = "ABOUT")
+	private String about;
+	// other user properties that you want
 
-    @Transient
-    private List<Rating> ratings=new ArrayList<>();
-
+	@Transient
+	private List<Rating> ratings = new ArrayList<>();
 
 }

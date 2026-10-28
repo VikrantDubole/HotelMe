@@ -1,7 +1,7 @@
-package com.lcwd.hotel.controllers;
+package com.hotel.hotel.controllers;
 
-import com.lcwd.hotel.entites.Hotel;
-import com.lcwd.hotel.services.HotelService;
+import com.hotel.hotel.entites.Hotel;
+import com.hotel.hotel.services.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,32 +14,29 @@ import java.util.List;
 @RequestMapping("/hotels")
 public class HotelController {
 
-    @Autowired
-    private HotelService hotelService;
+	@Autowired
+	private HotelService hotelService;
 
-    //create
+	// create
 
-    @PreAuthorize("hasAuthority('Admin')")
-    @PostMapping
-    public ResponseEntity<Hotel> createHotel(@RequestBody Hotel hotel) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(hotelService.create(hotel));
-    }
+	@PreAuthorize("hasAuthority('Admin')")
+	@PostMapping
+	public ResponseEntity<Hotel> createHotel(@RequestBody Hotel hotel) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(hotelService.create(hotel));
+	}
 
+	// get single
+	@PreAuthorize("hasAuthority('SCOPE_internal')")
+	@GetMapping("/{hotelId}")
+	public ResponseEntity<Hotel> createHotel(@PathVariable String hotelId) {
+		return ResponseEntity.status(HttpStatus.OK).body(hotelService.get(hotelId));
+	}
 
-    //get single
-    @PreAuthorize("hasAuthority('SCOPE_internal')")
-    @GetMapping("/{hotelId}")
-    public ResponseEntity<Hotel> createHotel(@PathVariable String hotelId) {
-        return ResponseEntity.status(HttpStatus.OK).body(hotelService.get(hotelId));
-    }
-
-
-    //get all
-    @PreAuthorize("hasAuthority('SCOPE_internal') || hasAuthority('Admin')")
-    @GetMapping
-    public ResponseEntity<List<Hotel>> getAll(){
-        return ResponseEntity.ok(hotelService.getAll());
-    }
-
+	// get all
+	@PreAuthorize("hasAuthority('SCOPE_internal') || hasAuthority('Admin')")
+	@GetMapping
+	public ResponseEntity<List<Hotel>> getAll() {
+		return ResponseEntity.ok(hotelService.getAll());
+	}
 
 }

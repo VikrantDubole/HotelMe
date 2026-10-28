@@ -1,4 +1,4 @@
-package com.lcwd.service.registry;
+package com.hotel.service.registry;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

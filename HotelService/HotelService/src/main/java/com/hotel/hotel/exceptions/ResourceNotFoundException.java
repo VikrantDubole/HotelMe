@@ -1,11 +1,11 @@
-package com.lcwd.hotel.exceptions;
+package com.hotel.hotel.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
-    public ResourceNotFoundException(String s) {
-        super(s);
-    }
+	public ResourceNotFoundException(String s) {
+		super(s);
+	}
 
-    public ResourceNotFoundException(){
-        super("Resource not found !!");
-    }
+	public ResourceNotFoundException() {
+		super("Resource not found !!");
+	}
 }

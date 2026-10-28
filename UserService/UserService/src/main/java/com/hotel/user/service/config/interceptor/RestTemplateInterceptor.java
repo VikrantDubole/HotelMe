@@ -1,4 +1,4 @@
-package com.lcwd.user.service.config.interceptor;
+package com.hotel.user.service.config.interceptor;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -11,15 +11,16 @@ import java.io.IOException;
 @Component
 public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 
-    private final ClientCredentialsTokenProvider tokenProvider;
+	private final ClientCredentialsTokenProvider tokenProvider;
 
-    public RestTemplateInterceptor(ClientCredentialsTokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
+	public RestTemplateInterceptor(ClientCredentialsTokenProvider tokenProvider) {
+		this.tokenProvider = tokenProvider;
+	}
 
-    @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        request.getHeaders().setBearerAuth(tokenProvider.getAccessToken());
-        return execution.execute(request, body);
-    }
+	@Override
+	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
+			throws IOException {
+		request.getHeaders().setBearerAuth(tokenProvider.getAccessToken());
+		return execution.execute(request, body);
+	}
 }

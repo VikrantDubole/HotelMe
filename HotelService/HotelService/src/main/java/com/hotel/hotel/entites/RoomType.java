@@ -1,4 +1,4 @@
-package com.lcwd.hotel.entites;
+package com.hotel.hotel.entites;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

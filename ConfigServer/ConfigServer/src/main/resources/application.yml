@@ -8,5 +8,5 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/DurgeshCoder/microservice-tutorial-config
+          uri: https://github.com/VikrantDubole/HotelMeConfig.git
           clone-on-start: true

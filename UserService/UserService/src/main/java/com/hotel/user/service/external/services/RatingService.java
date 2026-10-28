@@ -1,6 +1,6 @@
-package com.lcwd.user.service.external.services;
+package com.hotel.user.service.external.services;
 
-import com.lcwd.user.service.entities.Rating;
+import com.hotel.user.service.entities.Rating;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,20 +16,17 @@ import java.util.Objects;
 @FeignClient(name = "RATING-SERVICE")
 public interface RatingService {
 
+	// get
 
-    //get
+	// POST
 
-    //POST
+	@PostMapping("/ratings")
+	public ResponseEntity<Rating> createRating(Rating values);
 
-    @PostMapping("/ratings")
-    public ResponseEntity<Rating> createRating(Rating values);
+	// PUT
+	@PutMapping("/ratings/{ratingId}")
+	public ResponseEntity<Rating> updateRating(@PathVariable("ratingId") String ratingId, Rating rating);
 
-
-    //PUT
-    @PutMapping("/ratings/{ratingId}")
-    public ResponseEntity<Rating> updateRating(@PathVariable("ratingId") String ratingId, Rating rating);
-
-
-    @DeleteMapping("/ratings/{ratingId}")
-    public void deleteRating(@PathVariable String ratingId);
+	@DeleteMapping("/ratings/{ratingId}")
+	public void deleteRating(@PathVariable String ratingId);
 }

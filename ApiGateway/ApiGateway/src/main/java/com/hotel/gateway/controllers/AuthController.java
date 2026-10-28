@@ -1,6 +1,6 @@
-package com.lcwd.gateway.controllers;
+package com.hotel.gateway.controllers;
 
-import com.lcwd.gateway.models.AuthResponse;
+import com.hotel.gateway.models.AuthResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
