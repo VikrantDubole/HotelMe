@@ -5,17 +5,17 @@ spring:
   application:
     name: USER-SERVICE
   datasource:
-    url: jdbc:mysql://localhost:3307/microservices
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://localhost:5432/userdb
+    username: postgres
+    password: Vikrant@6206
+    
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   config:
     import: optional:configserver:http://localhost:8085
@@ -24,19 +24,19 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${OKTA_ISSUER}
+          issuer-uri: https://integrator-7851658.okta.com/oauth2/default
       client:
         registration:
           my-internal-client:
             provider: okta
             authorization-grant-type: client_credentials
             scope: internal
-            client-id: ${OKTA_CLIENT_ID}
-            client-secret: ${OKTA_CLIENT_SECRET}
+            client-id: 0oa199oen8rr5syqM698
+            client-secret: 74v6nZPxTVMe1Rl-OH99y2XNV8EuVKGk8PsWLNBWo6_2p-jtgxOfoX6831h7heep
 
         provider:
           okta:
-            issuer-uri: ${OKTA_ISSUER}
+            issuer-uri: https://integrator-7851658.okta.com/oauth2/default
 
 
 
@@ -96,8 +96,8 @@ resilience4j:
 
 okta:
   oauth2:
-    issuer: ${OKTA_ISSUER}
-    audience: ${OKTA_AUDIENCE:api://default}
+    issuer: https://integrator-7851658.okta.com/oauth2/default
+    audience: api://default
 
 
 

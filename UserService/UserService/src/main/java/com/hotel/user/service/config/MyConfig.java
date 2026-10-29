@@ -28,8 +28,11 @@ public class MyConfig {
 	@Bean
 	public OAuth2AuthorizedClientManager manager(ClientRegistrationRepository clientRegistrationRepository,
 			OAuth2AuthorizedClientService authorizedClientService) {
+		
 		OAuth2AuthorizedClientProvider provider = OAuth2AuthorizedClientProviderBuilder.builder().clientCredentials()
 				.build();
+		
+		
 		AuthorizedClientServiceOAuth2AuthorizedClientManager manager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(
 				clientRegistrationRepository, authorizedClientService);
 		manager.setAuthorizedClientProvider(provider);

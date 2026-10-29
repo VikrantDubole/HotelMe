@@ -4,23 +4,23 @@ spring:
   application:
     name: BOOKING-SERVICE
   datasource:
-    url: ${BOOKING_DB_URL:jdbc:postgresql://localhost:5433/booking}
-    username: ${BOOKING_DB_USER:booking}
-    password: ${BOOKING_DB_PASSWORD:booking}
+    url: jdbc:postgresql://localhost:5432/bookingsdb
+    username: postgres
+    password: Vikrant@6206
   jpa:
     hibernate:
       ddl-auto: validate
   config:
-    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8085}
+    import: optional:configserver:http://localhost:8085
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${OKTA_ISSUER}
+          issuer-uri: https://integrator-7851658.okta.com/oauth2/default
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+      defaultZone: http://localhost:8761/eureka
 management:
   endpoints:
     web:
