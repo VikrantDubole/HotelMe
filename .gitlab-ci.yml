@@ -1,0 +1,31 @@
+
+stages:
+  - build
+
+default:
+  image: maven:3.9.9-eclipse-temurin-17
+  cache:
+    key: maven-cache
+    paths:
+      - .m2/repository/
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+build_hotel_service:
+  stage: build
+  script:
+    - mvn -f HotelService/HotelService/pom.xml clean package -DskipTests
+  artifacts:
+    paths:
+      - HotelService/HotelService/target/*.jar
+    expire_in: 1 day
+
+build_user_service:
+  stage: build
+  script:
+    - mvn -f UserService/UserService/pom.xml clean package -DskipTests
+  artifacts:
+    paths:
+      - UserService/UserService/target/*.jar
+    expire_in: 1 day
