@@ -2,7 +2,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017}
       database: ratingdb
   application:
     name: RATING-SERVICE
@@ -17,10 +17,10 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
 
 
 okta:
   oauth2:
-    issuer: https://integrator-7851658.okta.com/oauth2/default
-    audience: api://default
+    issuer: ${OKTA_ISSUER}
+    audience: ${OKTA_AUDIENCE}

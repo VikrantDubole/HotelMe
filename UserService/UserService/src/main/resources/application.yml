@@ -5,9 +5,9 @@ spring:
   application:
     name: USER-SERVICE
   datasource:
-    url: jdbc:postgresql://localhost:5432/userdb
-    username: postgres
-    password: Vikrant@6206
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/userdb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     
   jpa:
     hibernate:
@@ -18,40 +18,36 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   config:
-    import: optional:configserver:http://localhost:8085
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8085}
 
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://integrator-7851658.okta.com/oauth2/default
+          issuer-uri: ${OKTA_ISSUER}
       client:
         registration:
           my-internal-client:
             provider: okta
             authorization-grant-type: client_credentials
             scope: internal
-            client-id: 0oa199oen8rr5syqM698
-            client-secret: 74v6nZPxTVMe1Rl-OH99y2XNV8EuVKGk8PsWLNBWo6_2p-jtgxOfoX6831h7heep
+            client-id: ${OKTA_CLIENT_ID}
+            client-secret: ${OKTA_CLIENT_SECRET}
 
         provider:
           okta:
-            issuer-uri: https://integrator-7851658.okta.com/oauth2/default
+            issuer-uri: ${OKTA_ISSUER}
 
 
-
-
-
-#        spring.config.import= configserver:http://localhost:8085
-
-#eureka:
-#  instance:
-#    prefer-ip-address: true
-#  client:
-#    fetch-registry: true
-#    register-with-eureka: true
-#    service-url:
-#      defaultZone: http://localhost:8761/eureka
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
+      
 management:
   health:
     circuitbreakers:
@@ -96,8 +92,8 @@ resilience4j:
 
 okta:
   oauth2:
-    issuer: https://integrator-7851658.okta.com/oauth2/default
-    audience: api://default
+    issuer: ${OKTA_ISSUER}
+    audience: ${OKTA_AUDIENCE}
 
 
 
